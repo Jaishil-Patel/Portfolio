@@ -135,7 +135,7 @@ export default function ThemeDial() {
     if (!rafId.current) rafId.current = requestAnimationFrame(flushScrub)
   }
 
-  const onPointerUp = (e: React.PointerEvent) => {
+  const onPointerUp = () => {
     if (!dragging.current) return
     dragging.current = false
     if (rafId.current) {
