@@ -1,0 +1,59 @@
+/* Bode card front: self-annotating document that fades to the logo.
+   The root carries .project-image so it fills the card face like the
+   static thumbnail it replaces. */
+
+.bode-show {
+  position: relative;
+  overflow: hidden;
+  /* Same premium "stage" treatment as the RaceIQ track card: near-black
+     at night, light lavender at day (interpolated by the dial). */
+  background:
+    radial-gradient(circle at 50% 45%, color-mix(in srgb, var(--brand-violet) 12%, transparent), transparent 60%),
+    linear-gradient(180deg,
+      color-mix(in oklab, rgb(196 181 253 / 0.45) var(--tp), rgb(12 10 18 / 0.35)),
+      color-mix(in oklab, rgb(167 139 250 / 0.55) var(--tp), rgb(12 10 18 / 0.7)));
+}
+
+.bode-show__canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 1;
+  transition: opacity 700ms ease;
+}
+
+.bode-show__canvas--hidden {
+  opacity: 0;
+}
+
+.bode-show__logo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 700ms ease;
+}
+
+.bode-show__logo--visible {
+  opacity: 1;
+  animation: bode-logo-pulse 2.6s ease-in-out infinite;
+}
+
+@keyframes bode-logo-pulse {
+  0%,
+  100% {
+    filter: brightness(1);
+  }
+  50% {
+    filter: brightness(1.12);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bode-show__logo--visible {
+    animation: none;
+  }
+}

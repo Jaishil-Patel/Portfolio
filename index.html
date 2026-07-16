@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap"
+      rel="stylesheet"
+    />
+    <title>Jaishil's Portfolio</title>
+    <script>
+      // Seed the day–night value before first paint so there is no theme flash.
+      // Returning visitors get their last settled pole; first visits start in
+      // day (light) mode.
+      ;(function () {
+        var pole
+        try {
+          pole = localStorage.getItem('theme-pole-v2')
+        } catch (e) { /* storage unavailable */ }
+        var day = pole ? pole === 'day' : true
+        var d = document.documentElement
+        d.style.setProperty('--t', day ? '1' : '0')
+        d.style.setProperty('--dusk', '0')
+        d.style.colorScheme = day ? 'light' : 'dark'
+        d.dataset.theme = day ? 'light' : 'dark'
+      })()
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

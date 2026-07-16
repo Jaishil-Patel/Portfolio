@@ -1,0 +1,130 @@
+.track3d {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+  /* Radial glow behind the track reads as a premium "stage".
+     The veil interpolates with the day–night dial: near-black at night,
+     light lavender at day. */
+  background:
+    radial-gradient(circle at 50% 45%, color-mix(in srgb, var(--brand-violet) 12%, transparent), transparent 60%),
+    linear-gradient(180deg,
+      color-mix(in oklab, rgb(196 181 253 / 0.45) var(--tp), rgb(12 10 18 / 0.35)),
+      color-mix(in oklab, rgb(167 139 250 / 0.55) var(--tp), rgb(12 10 18 / 0.7)));
+}
+
+.track3d:active {
+  cursor: grabbing;
+}
+
+.track3d canvas {
+  touch-action: none;
+}
+
+.track3d-hint {
+  position: absolute;
+  left: 50%;
+  bottom: 2.6rem;
+  transform: translateX(-50%);
+  padding: 0.28rem 0.7rem;
+  border-radius: 0;
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-soft);
+  background: color-mix(in srgb, var(--bg) 60%, transparent);
+  border: 1px solid color-mix(in srgb, var(--text-muted) 40%, transparent);
+  backdrop-filter: blur(6px);
+  pointer-events: none;
+  z-index: 3;
+  animation: track3d-hint-in 0.4s ease both;
+}
+
+/* Explicit flip affordance: the only click that reaches the flip card. */
+.track3d-flip {
+  position: absolute;
+  right: 0.85rem;
+  bottom: 2.6rem;
+  z-index: 3;
+  padding: 0.28rem 0.7rem;
+  border-radius: 0;
+  font-size: 0.68rem;
+  font-family: inherit;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-soft);
+  background: color-mix(in srgb, var(--bg) 60%, transparent);
+  border: 1px solid color-mix(in srgb, var(--text-muted) 40%, transparent);
+  backdrop-filter: blur(6px);
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.track3d-flip:hover,
+.track3d-flip:focus-visible {
+  background: color-mix(in srgb, var(--panel) 85%, transparent);
+  border-color: color-mix(in srgb, var(--text-soft) 60%, transparent);
+}
+
+@keyframes track3d-hint-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 6px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+/* Fallbacks rendered directly in the card (Suspense/error boundary)
+   rather than inside the 3D scene: center them ourselves. Uses inset +
+   margin auto so the spinner's rotate transform isn't clobbered. */
+.track3d > .track3d-spinner,
+.track3d > .track3d-missing {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: fit-content;
+  height: fit-content;
+}
+
+.track3d > .track3d-spinner {
+  width: 34px;
+  height: 34px;
+}
+
+.track3d-spinner {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 3px solid color-mix(in srgb, var(--text-muted) 30%, transparent);
+  border-top-color: var(--brand-teal);
+  animation: track3d-spin 0.8s linear infinite;
+  margin: auto;
+}
+
+.track3d-missing {
+  padding: 0.4rem 0.75rem;
+  border-radius: 0;
+  font-size: 0.75rem;
+  color: var(--text-soft);
+  background: color-mix(in srgb, var(--bg) 75%, transparent);
+  border: 1px solid color-mix(in srgb, var(--text-muted) 35%, transparent);
+  white-space: nowrap;
+}
+
+@keyframes track3d-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .track3d-spinner {
+    animation-duration: 1.6s;
+  }
+}

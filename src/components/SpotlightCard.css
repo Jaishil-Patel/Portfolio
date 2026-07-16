@@ -1,0 +1,240 @@
+.card-spotlight {
+  position: relative;
+  border-radius: 0;
+  padding: 0;
+  overflow: visible;
+  --mouse-x: 50%;
+  --mouse-y: 50%;
+  --spotlight-color: rgba(255, 255, 255, 0.05);
+  cursor: pointer;
+  perspective: 1000px;
+  height: 100%;
+}
+
+/* Outer card is only the 3D stage: strip the visible frame so it
+   doesn't stay put while the inner flips. The frame lives on the faces. */
+.card-spotlight.project {
+  border: none;
+  background: transparent;
+  box-shadow: none;
+  overflow: visible;
+}
+
+.card-spotlight::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at var(--mouse-x) var(--mouse-y), var(--spotlight-color), transparent 80%);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+}
+
+/* Same pill styling as the RaceIQ card's "flip for details" chip. */
+.card-spotlight::after {
+  content: 'Flip for details';
+  position: absolute;
+  right: 1rem;
+  top: 1rem;
+  z-index: 3;
+  padding: 0.28rem 0.7rem;
+  border-radius: 0;
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  /* Chip sits over the project thumbnail (a photo), so it stays dark. */
+  color: rgba(226, 232, 240, 0.92);
+  background: rgba(12, 10, 18, 0.6);
+  border: 1px solid rgba(168, 163, 186, 0.4);
+  backdrop-filter: blur(6px);
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+/* Once flipped, the back face is showing — the "flip for details" hint no
+   longer applies, so hide it. */
+.card-spotlight.is-flipped::after {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.card-spotlight:hover::before,
+.card-spotlight:focus-within::before {
+  opacity: 0.6;
+}
+
+.card-spotlight-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.6s ease;
+}
+
+.card-spotlight.is-flipped .card-spotlight-inner {
+  transform: rotateY(180deg);
+}
+
+.card-face {
+  position: relative;
+  padding: 1rem 1.15rem;
+  min-height: 125px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 0.5rem;
+  backface-visibility: hidden;
+  /* Each face carries the full card frame so the whole card flips as one */
+  border: 1px solid color-mix(in srgb, var(--text-muted) 60%, transparent);
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--panel) 96%, transparent), color-mix(in srgb, var(--panel) 86%, transparent)),
+    radial-gradient(circle at 0 0, color-mix(in srgb, var(--brand-violet) 16%, transparent), transparent 55%);
+  box-shadow:
+    0 18px 40px var(--shadow),
+    0 0 0 1px var(--shadow);
+}
+
+.card-face.back {
+  position: absolute;
+  inset: 0;
+  transform: rotateY(180deg);
+  overflow: auto;
+  overscroll-behavior: contain;
+  /* Modern slim scrollbar (Firefox) */
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--text-muted) 45%, transparent) transparent;
+}
+
+/* Modern slim scrollbar (Chrome/Edge/Safari) */
+.card-face.back::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.card-face.back::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.card-face.back::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--text-muted) 45%, transparent);
+  border-radius: 999px;
+}
+
+.card-face.back::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--text-dim) 70%, transparent);
+}
+
+.card-face.back .project-stack {
+  font-size: 0.76rem;
+  margin-bottom: 0.3rem;
+}
+
+.card-face.back .list-soft {
+  font-size: 0.82rem;
+  gap: 0.3rem;
+}
+
+/* Front face: the thumbnail fills the entire card, with the summary
+   sitting on top as a caption overlay at the bottom. */
+.card-face.front {
+  padding: 0;
+  gap: 0;
+  overflow: hidden;
+}
+
+.card-face.front .project-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-height: none;
+  aspect-ratio: auto;
+  margin: 0;
+  flex: none;
+  /* Show the whole image scaled to fit rather than cropping it */
+  object-fit: contain;
+}
+
+/* Square logos/icons: fill the card edge-to-edge, cropping as needed. */
+.card-face.front .project-image--cover {
+  object-fit: cover;
+}
+
+/* Logo thumbnails: keep the whole logo above the caption overlay so it
+   never looks chopped. (The bento banner layout overrides this with its
+   own higher-specificity rule, where the caption sits beside the image.)
+   Height must be explicit — `height: auto` on an <img> resolves to its
+   intrinsic-ratio height and overflows the card. */
+.card-face.front .project-image--logo {
+  height: calc(100% - 2.4rem);
+  padding-top: 0.6rem;
+}
+
+.card-face.front .project-summary {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: 0;
+  padding: 0.55rem 0.95rem 0.65rem;
+  /* Caption scrim sits over the thumbnail image, so it stays dark with
+     fixed light text at both theme poles. */
+  background: linear-gradient(to top, rgba(12, 10, 18, 0.92), rgba(12, 10, 18, 0));
+  color: #e9e7f0;
+  z-index: 2;
+}
+
+/* --------------------------------------------------------------------
+   Interactive variant (e.g. the live 3D track card).
+   A WebGL <canvas> inside a `preserve-3d` / `backface-visibility: hidden`
+   subtree gets its GPU context evicted by Chrome, painting the card white.
+   So this variant swaps the 3D rotateY flip for a plain 2D crossfade,
+   keeping the canvas on a flat compositing layer.
+   -------------------------------------------------------------------- */
+.card-spotlight.project--interactive {
+  perspective: none;
+}
+
+/* This card flips only via its dedicated "flip for details" chip, so the
+   generic hover hint would be misleading here. */
+.card-spotlight.project--interactive::after {
+  content: none;
+}
+
+.card-spotlight.project--interactive .card-spotlight-inner {
+  transform-style: flat;
+  transform: none;
+}
+
+.card-spotlight.project--interactive.is-flipped .card-spotlight-inner {
+  transform: none;
+}
+
+.card-spotlight.project--interactive .card-face {
+  backface-visibility: visible;
+  transition: opacity 0.45s ease;
+}
+
+.card-spotlight.project--interactive .card-face.front {
+  opacity: 1;
+}
+
+.card-spotlight.project--interactive .card-face.back {
+  transform: none;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.card-spotlight.project--interactive.is-flipped .card-face.front {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.card-spotlight.project--interactive.is-flipped .card-face.back {
+  opacity: 1;
+  pointer-events: auto;
+}

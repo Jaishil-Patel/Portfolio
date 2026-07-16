@@ -1,0 +1,53 @@
+/* Aperture Protocol card front: a keypad puzzle solves itself, the doors
+   slide open, and the scene fades to the game art. The root carries
+   .project-image so it fills the card face like the thumbnail it replaces. */
+
+.aperture-show {
+  position: relative;
+  overflow: hidden;
+  /* Stage veil follows the day–night dial: near-black at night, light
+     lavender at day. The keypad prop it frames stays dark deliberately. */
+  background:
+    radial-gradient(circle at 50% 45%, color-mix(in srgb, var(--brand-teal) 8%, transparent), transparent 60%),
+    linear-gradient(180deg,
+      color-mix(in oklab, rgb(196 181 253 / 0.45) var(--tp), rgb(12 10 18 / 0.35)),
+      color-mix(in oklab, rgb(167 139 250 / 0.55) var(--tp), rgb(12 10 18 / 0.7)));
+}
+
+.aperture-show__canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.aperture-show__art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 700ms ease;
+}
+
+.aperture-show__art--visible {
+  opacity: 1;
+  animation: aperture-art-pulse 2.6s ease-in-out infinite;
+}
+
+@keyframes aperture-art-pulse {
+  0%,
+  100% {
+    filter: brightness(1);
+  }
+  50% {
+    filter: brightness(1.1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aperture-show__art--visible {
+    animation: none;
+  }
+}

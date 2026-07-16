@@ -1,0 +1,222 @@
+/* Cinematic pinned horizontal journey.
+   The outer .journey is tall (n * 85vh); .journey__pin sticks to the
+   viewport while scroll progress slides .journey__track sideways. */
+
+.journey {
+  position: relative;
+  /* Vertical position of the timeline within the pinned viewport */
+  --line-y: 40%;
+}
+
+.journey__pin {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.journey__track {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  /* One full pin-width per chapter — the slide translates in fractions
+     of this total width. --n is set inline from the entry count. */
+  width: calc(var(--n, 5) * 100%);
+  will-change: transform;
+}
+
+/* Vertical rhythm shared by every chapter: giant label sits above the
+   timeline (at --line-y), the card hangs below it from a node. */
+.journey__chapter {
+  position: relative;
+  flex: 0 0 calc(100% / var(--n, 5));
+  min-width: 0;
+  height: 100%;
+  padding: 0 4vw;
+}
+
+/* Timeline connecting all chapters, drawn once across the whole track */
+.journey__line {
+  position: absolute;
+  top: var(--line-y);
+  left: 0;
+  right: 0;
+  height: 2px;
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--text-muted) 30%, transparent);
+}
+
+/* Node where this chapter sits on the timeline, with a stem to the card */
+.journey__node {
+  position: absolute;
+  top: var(--line-y);
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 2px solid var(--node, var(--brand-violet));
+  box-shadow: 0 0 8px color-mix(in srgb, var(--node, var(--brand-violet)) 35%, transparent);
+  z-index: 1;
+}
+
+.journey__node::after {
+  content: '';
+  position: absolute;
+  top: calc(100% + 2px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 1.5rem;
+  background: linear-gradient(180deg, var(--node, var(--brand-violet)), transparent);
+}
+
+.journey__node--work,
+.journey__node--education,
+.journey__node--cert {
+  --node: var(--brand-teal);
+}
+
+/* Giant ghost label above the line */
+.journey__big-wrap {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(100% - var(--line-y));
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.journey__big {
+  margin-bottom: 1.4rem;
+  font-size: clamp(4.5rem, 12vw, 10rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  user-select: none;
+  /* Ghost year labels: faint light outline at night, near-black at day so
+     they stay legible on the lavender paper. */
+  color: color-mix(in oklab, rgb(34 26 51 / 0.12) var(--tp), rgb(165 161 179 / 0.06));
+  -webkit-text-stroke: 2px color-mix(in oklab, rgb(34 26 51 / 0.85) var(--tp), rgb(165 161 179 / 0.22));
+}
+
+/* Card hangs from the node, below the line */
+.journey__card-slot {
+  position: absolute;
+  top: calc(var(--line-y) + 2.2rem);
+  left: 4vw;
+  right: 4vw;
+  display: flex;
+  justify-content: center;
+}
+
+/* Chapter card */
+.journey__card {
+  position: relative;
+  z-index: 1;
+  max-width: 30rem;
+  padding: 1.5rem 1.7rem 1.4rem;
+  border-radius: 0;
+  border: 1px solid color-mix(in srgb, var(--text-muted) 28%, transparent);
+  background: color-mix(in srgb, var(--panel) 65%, transparent);
+  box-shadow: 0 24px 60px var(--shadow);
+  backdrop-filter: blur(16px) saturate(140%);
+}
+
+.journey__count {
+  display: block;
+  margin-bottom: 0.7rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.22em;
+  color: color-mix(in oklab, var(--text-muted) 75%, var(--bg));
+  font-variant-numeric: tabular-nums;
+}
+
+.journey__tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.6rem;
+  padding: 0.2rem 0.65rem;
+  border-radius: 0;
+  font-size: 0.66rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  border: 1px solid color-mix(in srgb, var(--text-muted) 35%, transparent);
+  background: transparent;
+}
+
+.journey__title {
+  margin: 0 0 0.2rem;
+  font-size: 1.45rem;
+  line-height: 1.2;
+  color: var(--text);
+}
+
+.journey__place {
+  margin: 0 0 0.45rem;
+  font-size: 0.95rem;
+  color: var(--text-dim);
+}
+
+.journey__period {
+  display: inline-block;
+  margin-bottom: 0.65rem;
+  font-size: 0.74rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.journey__points {
+  margin: 0;
+  padding-left: 1.05rem;
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.9rem;
+  color: var(--text-dim);
+}
+
+/* Progress rail pinned to the bottom of the viewport while driving */
+.journey__rail {
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  bottom: 2.2rem;
+  height: 2px;
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--text-muted) 18%, transparent);
+  overflow: hidden;
+}
+
+.journey__rail-fill {
+  position: absolute;
+  inset: 0;
+  transform-origin: left;
+  background: linear-gradient(90deg, var(--brand-violet), var(--brand-teal));
+  box-shadow: 0 0 8px color-mix(in srgb, var(--brand-violet) 40%, transparent);
+}
+
+/* --------------------------------------------------------------------
+   Flat fallback: narrow screens and prefers-reduced-motion get a plain
+   vertical stack of the same cards.
+   -------------------------------------------------------------------- */
+.journey--flat {
+  display: flex;
+  flex-direction: column;
+  gap: 1.3rem;
+  padding: 0.5rem 0;
+}
+
+.journey--flat .journey__card {
+  max-width: none;
+}

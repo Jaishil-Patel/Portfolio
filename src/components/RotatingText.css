@@ -1,0 +1,16 @@
+.rotating-text {
+  display: inline-flex;
+  overflow: hidden;
+  vertical-align: bottom;
+  line-height: 1.15;
+}
+
+.rotating-text__word {
+  display: inline-flex;
+  white-space: nowrap;
+}
+
+.rotating-text__letter {
+  display: inline-block;
+  white-space: pre;
+}

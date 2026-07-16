@@ -1,0 +1,204 @@
+/* Brain intro overlay */
+
+.brain-intro {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  overflow: hidden;
+  cursor: pointer;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(139, 92, 246, 0.1), transparent 58%),
+    radial-gradient(circle at 82% 108%, rgba(45, 212, 191, 0.06), transparent 55%),
+    radial-gradient(circle at 50% 50%, #0d0a16 0%, #070510 55%, #000 100%);
+  opacity: 1;
+  transition: opacity 480ms ease;
+}
+
+.brain-intro--leaving {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.brain-intro__canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Text block sits in the lower third, under the brain */
+
+.brain-intro__text {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: 0 1.5rem 13vh;
+  pointer-events: none;
+  transition:
+    transform 700ms cubic-bezier(0.6, -0.1, 0.8, 0.4),
+    filter 600ms ease,
+    opacity 520ms ease;
+}
+
+.brain-intro[data-stage='zoom'] .brain-intro__text,
+.brain-intro[data-stage='flash'] .brain-intro__text {
+  transform: scale(1.9);
+  filter: blur(14px);
+  opacity: 0;
+}
+
+.bi-title,
+.bi-sub,
+.bi-mono {
+  margin: 0;
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 600ms ease,
+    transform 750ms cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.brain-intro:not([data-stage='boot']) .bi-title {
+  opacity: 1;
+  transform: none;
+  transition-delay: 0.15s;
+}
+
+.brain-intro:not([data-stage='boot']) .bi-sub {
+  opacity: 1;
+  transform: none;
+  transition-delay: 0.5s;
+}
+
+.brain-intro:not([data-stage='boot']) .bi-mono {
+  opacity: 1;
+  transform: none;
+  transition-delay: 0.95s;
+}
+
+.bi-title {
+  margin-bottom: 0.35rem;
+  font-size: clamp(2rem, 2.4vw + 1.4rem, 3rem);
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  color: #faf9fc;
+}
+
+.bi-sub {
+  margin-bottom: 1.1rem;
+  font-size: clamp(1.05rem, 1vw + 0.8rem, 1.4rem);
+  color: #cfcadd;
+}
+
+.bi-grad {
+  background: linear-gradient(90deg, #8b5cf6, #2dd4bf);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.bi-mono {
+  font-family: 'SF Mono', ui-monospace, Menlo, Monaco, Consolas, 'Liberation Mono',
+    'Courier New', monospace;
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #8f89a6;
+}
+
+.bi-mono::after {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 0.9em;
+  margin-left: 0.35rem;
+  background: #8b5cf6;
+  vertical-align: -0.12em;
+  animation: bi-blink 0.9s step-end infinite;
+}
+
+.bi-skip {
+  position: absolute;
+  bottom: 2.2vh;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  margin: 0;
+  text-align: center;
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(157, 151, 179, 0.55);
+  opacity: 0;
+  transition: opacity 800ms ease 1.6s;
+  pointer-events: none;
+}
+
+.brain-intro[data-stage='alive'] .bi-skip {
+  opacity: 1;
+}
+
+.brain-intro[data-stage='zoom'] .bi-skip,
+.brain-intro[data-stage='flash'] .bi-skip {
+  opacity: 0;
+  transition-delay: 0s;
+  transition-duration: 200ms;
+}
+
+/* White-hot flash as we punch through into the site */
+
+.brain-intro__flash {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(
+    circle at 50% 42%,
+    rgba(255, 255, 255, 0.95),
+    rgba(139, 92, 246, 0.55) 34%,
+    rgba(45, 212, 191, 0.18) 55%,
+    transparent 78%
+  );
+}
+
+.brain-intro[data-stage='flash'] .brain-intro__flash {
+  animation: bi-flash 640ms ease-out both;
+}
+
+@keyframes bi-flash {
+  0% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(2.4);
+  }
+}
+
+@keyframes bi-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bi-mono::after {
+    animation: none;
+  }
+  .brain-intro__flash {
+    display: none;
+  }
+}

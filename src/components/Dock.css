@@ -1,0 +1,58 @@
+.dock-outer {
+  margin: 0 0.5rem;
+  display: flex;
+  max-width: 100%;
+  align-items: center;
+}
+
+.dock-panel {
+  position: fixed;
+  bottom: 0.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: flex-end;
+  width: fit-content;
+  gap: 1rem;
+  border-radius: 0;
+  background-color: #0c0a12;
+  border: 1px solid rgba(168, 163, 186, 0.5);
+  padding: 0 0.5rem 0.5rem;
+  z-index: 1200;
+}
+
+.dock-item {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0;
+  background: rgba(22, 19, 32, 0.9);
+  border: 1px solid rgba(168, 163, 186, 0.35);
+  box-shadow:
+    0 10px 30px rgba(22, 19, 32, 0.9),
+    0 0 0 1px rgba(22, 19, 32, 0.9);
+  cursor: pointer;
+  outline: none;
+}
+
+.dock-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dock-label {
+  position: absolute;
+  top: -1.5rem;
+  left: 50%;
+  width: fit-content;
+  white-space: pre;
+  border-radius: 0;
+  border: 1px solid rgba(168, 163, 186, 0.5);
+  background-color: rgba(22, 19, 32, 0.95);
+  padding: 0.125rem 0.5rem;
+  font-size: 0.75rem;
+  color: #fff;
+  transform: translateX(-50%);
+}

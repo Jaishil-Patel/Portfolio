@@ -1,0 +1,107 @@
+/* The whole theme hangs off one number: --t (0 = night, 1 = day).
+   It is seeded by the inline script in index.html and driven by themeStore.
+   Every color below is a live color-mix() between the two poles, so any
+   intermediate --t renders a real in-between palette (dusk), not a fade. */
+@property --t {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
+
+@property --dusk {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 0;
+}
+
+:root {
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'SF Pro Text',
+    'Segoe UI', sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  /* day percentage used by every mix below */
+  --tp: calc(var(--t) * 100%);
+
+  /* ---- pole palettes: night = the original site, day = lavender paper ---- */
+  --night-bg: #05060f;
+  --day-bg: #f0ebfb;
+  --night-ink: #0c0a12;
+  --day-ink: #fdfcff;
+  --night-text: #faf9fc;
+  --day-text: #221a33;
+  --night-text-soft: #e9e7f0;
+  --day-text-soft: #322a47;
+  --night-muted: #a5a1b3;
+  --day-muted: #5d5378;
+  --night-dim: #d6d3e0;
+  --day-dim: #443b5c;
+  --night-panel: #161320;
+  --day-panel: #faf8ff;
+  --night-veil: rgb(22 19 32 / 0.82);
+  --day-veil: rgb(250 248 255 / 0.85);
+  --night-border: rgb(168 163 186 / 0.16);
+  --day-border: rgb(91 33 182 / 0.20);
+  --night-violet: #8b5cf6;
+  --day-violet: #6d28d9;
+  --night-violet-soft: #a78bfa;
+  --day-violet-soft: #7c3aed;
+  --night-teal: #2dd4bf;
+  --day-teal: #0d9488;
+  --night-deep: #4c1d95;
+  --day-deep: #5b21b6;
+  --night-shadow: rgb(0 0 0 / 0.55);
+  --day-shadow: rgb(76 29 149 / 0.22);
+
+  /* ---- interpolated semantic tokens: use THESE everywhere ---- */
+  --bg: color-mix(in oklab, var(--day-bg) var(--tp), var(--night-bg));
+  /* "ink" is the anti-text surface: near-black at night, near-white at day.
+     Used for text sitting on brand-gradient fills. */
+  --ink: color-mix(in oklab, var(--day-ink) var(--tp), var(--night-ink));
+  --text: color-mix(in oklab, var(--day-text) var(--tp), var(--night-text));
+  --text-soft: color-mix(in oklab, var(--day-text-soft) var(--tp), var(--night-text-soft));
+  --text-muted: color-mix(in oklab, var(--day-muted) var(--tp), var(--night-muted));
+  --text-dim: color-mix(in oklab, var(--day-dim) var(--tp), var(--night-dim));
+  --panel: color-mix(in oklab, var(--day-panel) var(--tp), var(--night-panel));
+  --panel-veil: color-mix(in oklab, var(--day-veil) var(--tp), var(--night-veil));
+  --border: color-mix(in oklab, var(--day-border) var(--tp), var(--night-border));
+  --brand-violet: color-mix(in oklab, var(--day-violet) var(--tp), var(--night-violet));
+  --brand-violet-soft: color-mix(in oklab, var(--day-violet-soft) var(--tp), var(--night-violet-soft));
+  --brand-teal: color-mix(in oklab, var(--day-teal) var(--tp), var(--night-teal));
+  --brand-deep: color-mix(in oklab, var(--day-deep) var(--tp), var(--night-deep));
+  --shadow: color-mix(in oklab, var(--day-shadow) var(--tp), var(--night-shadow));
+  --spotlight: color-mix(in oklab, rgb(139 92 246 / 0.14) var(--tp), rgb(255 255 255 / 0.12));
+
+  /* warm ember accent that only exists mid-scrub (--dusk peaks at t = 0.5) */
+  --dusk-warm: rgb(251 146 60 / calc(var(--dusk) * 0.16));
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background:
+    radial-gradient(1200px 800px at 15% -10%, color-mix(in oklab, rgb(124 58 237 / 0.16) var(--tp), rgb(139 92 246 / 0.12)), transparent 60%),
+    radial-gradient(1000px 700px at 100% 10%, color-mix(in oklab, rgb(139 92 246 / 0.12) var(--tp), rgb(168 163 186 / 0.14)), transparent 55%),
+    radial-gradient(900px 900px at 50% 120%, var(--dusk-warm), transparent 65%),
+    radial-gradient(900px 900px at 50% 120%, color-mix(in oklab, rgb(167 139 250 / 0.24) var(--tp), rgb(88 83 114 / 0.16)), transparent 60%),
+    var(--bg);
+  background-attachment: fixed;
+  color: var(--text);
+}
+
+#root {
+  min-height: 100vh;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
