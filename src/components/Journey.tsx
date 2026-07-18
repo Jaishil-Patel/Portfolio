@@ -231,6 +231,71 @@ export default function Journey() {
     return () => window.removeEventListener('wheel', onWheel);
   }, [flat]);
 
+  // Drag-to-drive: dragging the section horizontally maps 1:1 onto the
+  // vertical scroll that slides the track, so pulling a chapter sideways
+  // feels like panning the timeline directly.
+  useEffect(() => {
+    if (flat) return;
+    const el = ref.current;
+    if (!el) return;
+
+    let pointerId: number | null = null;
+    let dragging = false;
+    let downX = 0;
+    let downY = 0;
+    let lastX = 0;
+
+    const onDown = (e: PointerEvent) => {
+      if (e.button !== 0) return;
+      pointerId = e.pointerId;
+      dragging = false;
+      downX = e.clientX;
+      downY = e.clientY;
+    };
+
+    const onMove = (e: PointerEvent) => {
+      if (e.pointerId !== pointerId) return;
+      if (!dragging) {
+        // Engage only on clear horizontal intent so plain clicks and
+        // vertical text selection inside the cards keep working.
+        const tx = e.clientX - downX;
+        const ty = e.clientY - downY;
+        if (Math.abs(tx) < 8 || Math.abs(tx) <= Math.abs(ty)) return;
+        dragging = true;
+        el.setPointerCapture(e.pointerId);
+        document.body.style.userSelect = 'none';
+        lastX = e.clientX;
+        return;
+      }
+      const dx = e.clientX - lastX;
+      lastX = e.clientX;
+      // The track travels (n - 1) viewport widths across the section's
+      // scrollable height; invert that so one drag pixel ≈ one track pixel.
+      const scrollable = el.offsetHeight - window.innerHeight;
+      const ratio = scrollable / ((ENTRIES.length - 1) * window.innerWidth);
+      window.scrollBy({ top: -dx * ratio });
+    };
+
+    const onEnd = (e: PointerEvent) => {
+      if (e.pointerId !== pointerId) return;
+      pointerId = null;
+      dragging = false;
+      document.body.style.userSelect = '';
+    };
+
+    el.addEventListener('pointerdown', onDown);
+    window.addEventListener('pointermove', onMove);
+    window.addEventListener('pointerup', onEnd);
+    window.addEventListener('pointercancel', onEnd);
+    return () => {
+      el.removeEventListener('pointerdown', onDown);
+      window.removeEventListener('pointermove', onMove);
+      window.removeEventListener('pointerup', onEnd);
+      window.removeEventListener('pointercancel', onEnd);
+      document.body.style.userSelect = '';
+    };
+  }, [flat]);
+
   const n = ENTRIES.length;
   // The track is n chapters wide; slide it left by all but the last one.
   const trackX = useTransform(scrollYProgress, [0, 1], ['0%', `-${((n - 1) / n) * 100}%`]);

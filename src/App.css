@@ -1164,8 +1164,9 @@
 
 .scroll-cue {
   position: absolute;
-  /* Clears the 3.5rem GradualBlur strip pinned to the viewport bottom. */
-  bottom: 4.2rem;
+  /* Sits low so it never reaches the hero social buttons; the top of the
+     3.5rem GradualBlur strip only grazes the mouse icon at its weakest. */
+  bottom: 2.6rem;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
@@ -1177,7 +1178,9 @@
   background: transparent;
   color: var(--text-muted);
   cursor: pointer;
-  z-index: 2;
+  /* Below .hero-text (z-index 1) so the social buttons always win if a
+     short viewport pushes them down into the cue. */
+  z-index: 0;
   animation: cue-float 2.4s ease-in-out infinite;
 }
 
